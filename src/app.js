@@ -47,9 +47,7 @@ const minioClient = hasBucket ? new minio.Client({
 // console.log(minioClient.listObjects(imageBucketName, '', false));
 
 function getImagePath() {
-  const authorRaw = fs.readFileSync(AUTHOR_JSON);
-  const author = JSON.parse(authorRaw);
-  let imagePath = author.userName;
+  let imagePath = process.env.USER_ID;
   if (imagePath === undefined || imagePath === '') {
     imagePath = IMAGE_FILE_NAME_DEFAULT;
   }
@@ -57,7 +55,14 @@ function getImagePath() {
   return imagePath;
 }
 
+function getAuthor() {
+  const authorRaw = fs.readFileSync(AUTHOR_JSON);
+  const author = JSON.parse(authorRaw);
+  return author;
+}
+
 const imagePath = getImagePath();
+const author = getAuthor()
 
 // Save the image into S3 bucket
 // console.log('imageBucketEndpoint: ' + imageBucketEndpoint);
@@ -165,11 +170,13 @@ app.set('view engine', 'mustache');
 // GET /
 app.get('/', function(req, res) {
   const url =  req.protocol + '://' + req.get('host');
+  let twitterId = author.twitterId;
+  let twitter = twitterId !== undefined && twitterId !== '';
   res.render('index.html', {
     'og_url': url,
     'og_image': url + '/thumbnail',
-    'twitter': false,
-    'twitter_site': ''
+    'twitter': twitter,
+    'twitter_site': twitterId
   });
 });
 
