@@ -5,7 +5,7 @@ const THUMBNAIL_HEIGHT = 256;
 const REFRESH_INTERVAL = 5000;
 const IMAGE_FOLDER = 'showks-canvas/';
 const IMAGE_FILE_NAME_DEFAULT = 'canvas-image';
-const IMAGE_SAVE_INTERVAL = 5000;
+const SAVE_IMAGE_INTERVAL = 5000;
 const AUTHOR_JSON = __dirname + '/data/author.json';
 
 const version = process.env.npm_package_version;
@@ -17,8 +17,9 @@ const commandNamespace = io.of('/command');
 const notificationNamespace = io.of('/notification');
 const port = process.env.PORT || 8080;
 const draw = require('./public/scripts/draw.js');
-var minio = require('minio');
+const minio = require('minio');
 const fs = require('fs');
+const mustacheExpress = require('mustache-express');
 
 // Create a canvas for server-side drawing
 const { createCanvas, Image } = require('canvas')
@@ -64,21 +65,15 @@ const imagePath = getImagePath();
 // console.log('imageBucketAccessKey: ' + imageBucketAccessKey);
 // console.log('imageBucketSecretKey:' + imageBucketSecretKey);
 //console.log('imagePath: ' + imagePath);
-let lastSaved = 0;
 function saveCanvasImage() {
-  let saved = Date.now();
-  let diff = saved - lastSaved;
-  if (IMAGE_SAVE_INTERVAL < diff || diff < 0) {
-    let stream = canvas.createPNGStream();
-    minioClient.putObject(imageBucketName, imagePath, stream, function(err, etag) {
-      if (err) {
-        console.log('Failed to upload canvas image.');
-        return console.log(err);
-      }
-      return console.log('Saved canvas image successfully as:' + etag);
-    });
-    lastSaved = saved;
-  }  
+  let stream = canvas.createPNGStream();
+  minioClient.putObject(imageBucketName, imagePath, stream, function(err, etag) {
+    if (err) {
+      console.log('Failed to upload canvas image.');
+      return console.log(err);
+    }
+    return console.log('Saved canvas image successfully as:' + etag);
+  });
 }
 
 // Erase background
@@ -120,6 +115,7 @@ function loadCanvasImage() {
 
 // socket.io connection handler
 let lastUpdated = 0;
+let isDirty = false;
 function onCommandConnection(socket) {
   console.log('Connected to command namespace.');
 
@@ -135,10 +131,7 @@ function onCommandConnection(socket) {
       lastUpdated = updated;
       // console.log(`lastUpdated: ${lastUpdated}`);
     }
-    // Save the image
-    if (hasBucket) {
-      saveCanvasImage();
-    }
+    isDirty = true;
   });
 }
 
@@ -146,6 +139,13 @@ function onNotificationConnection(socket) {
   console.log('Connected to notification namespace.');
 }
 
+function onSaveImageTimer() {
+  // Save the image
+  if (isDirty) {
+    saveCanvasImage();
+    isDirty = false;
+  }
+}
 
 // Initialize the canvas
 if (hasBucket) {
@@ -155,6 +155,23 @@ if (hasBucket) {
 }
 
 // Setup the express web app
+
+// Register '.mustache' extension with The Mustache Express
+app.engine('html', mustacheExpress());
+
+// Setup view template engine
+app.set('view engine', 'mustache');
+
+// GET /
+app.get('/', function(req, res) {
+  const url =  req.protocol + '://' + req.get('host');
+  res.render('index.html', {
+    'og_url': url,
+    'og_image': url + '/thumbnail',
+    'twitter': false,
+    'twitter_site': ''
+  });
+});
 
 // GET /
 app.use(express.static(__dirname + '/public'));
@@ -190,3 +207,8 @@ notificationNamespace.on('connection', onNotificationConnection);
 
 // Start listening on the port for HTTP request
 http.listen(port, () => console.log('listening on port ' + port));
+
+// Start time to save image
+if (hasBucket) {
+  setInterval(onSaveImageTimer, SAVE_IMAGE_INTERVAL);
+}
