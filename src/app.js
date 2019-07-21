@@ -17,8 +17,9 @@ const commandNamespace = io.of('/command');
 const notificationNamespace = io.of('/notification');
 const port = process.env.PORT || 8080;
 const draw = require('./public/scripts/draw.js');
-var minio = require('minio');
+const minio = require('minio');
 const fs = require('fs');
+const mustacheExpress = require('mustache-express');
 
 // Create a canvas for server-side drawing
 const { createCanvas, Image } = require('canvas')
@@ -155,6 +156,23 @@ if (hasBucket) {
 }
 
 // Setup the express web app
+
+// Register '.mustache' extension with The Mustache Express
+app.engine('html', mustacheExpress());
+
+// Setup view template engine
+app.set('view engine', 'mustache');
+
+// GET /
+app.get('/', function(req, res) {
+  const url =  req.protocol + '://' + req.get('host');
+  res.render('index.html', {
+    'og_url': url,
+    'og_image': url + '/thumbnail',
+    'twitter': false,
+    'twitter_site': ''
+  });
+});
 
 // GET /
 app.use(express.static(__dirname + '/public'));
