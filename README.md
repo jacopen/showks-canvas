@@ -1,5 +1,5 @@
 # showKs Canvas
-showKs Canvas is a simple collaborative whiteboard using socket.io. This is the participant's web application of Japan Container Days showKs.
+showKs Canvas is a simple collaborative whiteboard using socket.io. This is the participant's web application of Cloud Native Days showKs.
 
 ## How to modify
 1. Create your own branch.
