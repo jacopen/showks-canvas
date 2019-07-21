@@ -91,6 +91,14 @@ html, body {
   font-size: 1.0em;
 }
 
+.shareTweetContainer {
+  clear: both;
+  margin-top: 35px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 1.0em;
+}
+
 .comment {
   overflow-wrap: break-word;
 }
