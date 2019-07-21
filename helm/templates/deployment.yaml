@@ -21,6 +21,8 @@ spec:
         - name: {{ .Chart.Name }}-{{ .Values.userID }}{{ .Values.nameSuffix }}
           image: cloudnativedaysjp/{{ .Chart.Name }}-{{ .Values.userID }}:{{ .Values.image.tag }}
           env:
+            - name: USER_ID
+              value: {{ .Values.userID }}
             - name: IMAGE_BUCKET_ENDPOINT
               valueFrom:
                 secretKeyRef:
