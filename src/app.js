@@ -35,7 +35,7 @@ const imageBucketSecretKey = process.env.IMAGE_BUCKET_SECRET_KEY;
 const imageMetaData = {
   'Content-Type': 'application/octet-stream'
 }
-const hasBucket = imageBucketEndpoint === undefined || imagePath === '' ? false : true;
+const hasBucket = imageBucketEndpoint === undefined || imageBucketEndpoint === '' ? false : true;
 const minioClient = hasBucket ? new minio.Client({
   endPoint: imageBucketEndpoint,
   port: 80,
