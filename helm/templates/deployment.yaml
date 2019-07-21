@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}-{{ .Values.userID }}{{ .Values.nameSuffix }}
-          image: gcr.io/ipc-cloudnativedays/{{ .Chart.Name }}-{{ .Values.userID }}:{{ .Values.image.tag }}
+          image: cloudnativedaysjp/{{ .Chart.Name }}-{{ .Values.userID }}:{{ .Values.image.tag }}
           env:
             - name: IMAGE_BUCKET_ENDPOINT
               valueFrom:
