@@ -20,6 +20,27 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-{{ .Values.userID }}{{ .Values.nameSuffix }}
           image: gcr.io/ipc-cloudnativedays/{{ .Chart.Name }}-{{ .Values.userID }}:{{ .Values.image.tag }}
+          env:
+            - name: IMAGE_BUCKET_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: image-bucket-secret
+                  key: endpoint
+            - name: IMAGE_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: image-bucket-secret
+                  key: name
+            - name: IMAGE_BUCKET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: image-bucket-secret
+                  key: access_key
+            - name: IMAGE_BUCKET_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: image-bucket-secret
+                  key: secret_key
           ports:
             - name: app-port
               containerPort: 8080
