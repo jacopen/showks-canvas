@@ -6,11 +6,13 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="{{{ og_url }}}" />
   <meta property="og:image" content="{{{ og_image }}}" />
-  <meta property="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary" />
   {{#twitter}}
-  <meta property="twitter:site" content="@{{ twitter_site }}" />
+  <meta name="twitter:site" content="@{{ twitter_site }}" />
   {{/twitter}}
-  <meta property="twitter:title" content="showKs Canvas - Cloud Native Days 2019" />
+  <meta name="twitter:title" content="showKs Canvas - Cloud Native Days 2019" />
+  <meta name="twitter:url" content="{{{ og_url }}}" />
+  <meta name="twitter:description" content="The demo for showKs Project at CloudNative Days Tokyo 2019" />
   <title>showKs Canvas - Cloud Native Days 2019</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -22,7 +24,7 @@
         <image class="logo" src="images/showKs-icon.png" alt="showKs logo" />
         <div class='titleTextContainer'>
             <div class='shoulder'>Cloud Native Days</div>
-            <div class='title'>showKs Canvas</div>    
+            <div class='title'>showKs Canvas</div>
         </div>
     </div>
     <div id="author" class='authorContainer'>
@@ -35,6 +37,9 @@
       <div class="authorCommentContainer">
         <div class="authorItemLabel">メッセージ</div>
         <div id="authorComment" class="authorItemValue"><span class="value comment"></span></div>
+      </div>
+      <div class="shareTweetContainer">
+        <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="CloudNative Days TokyoのshowKsお絵かきアプリで遊んでみよう！" data-url="{{{ og_url }}}" data-hashtags="CNDT2019" data-lang="ja" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
       </div>
     </div>
     <div id="colorPickerContainer">
