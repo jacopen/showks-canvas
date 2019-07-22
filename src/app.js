@@ -19,6 +19,7 @@ const port = process.env.PORT || 8080;
 const draw = require('./public/scripts/draw.js');
 const minio = require('minio');
 const fs = require('fs');
+const URL = require('url');
 const mustacheExpress = require('mustache-express');
 
 // Create a canvas for server-side drawing
@@ -152,6 +153,16 @@ function onSaveImageTimer() {
   }
 }
 
+function getRequestUrl(req) {
+  let originalUri = req.get('X-Original-Uri');
+  if (originalUri !== undefined && originalUri !== '') {
+    console.log('X-Original-Uri: ' + originalUri);
+    const oUrl = URL.parse(originalUri);
+    return oUrl.protocol + '://' + oUrl.host;
+  }
+  return req.protocol + '://' + req.get('host');
+}
+
 // Initialize the canvas
 if (hasBucket) {
   loadCanvasImage();
@@ -169,12 +180,12 @@ app.set('view engine', 'mustache');
 
 // GET /
 app.get('/', function(req, res) {
-  const url =  req.protocol + '://' + req.get('host');
+  const requestUrl =  getRequestUrl(req);
   let twitterId = author.twitterId;
   let twitter = twitterId !== undefined && twitterId !== '';
   res.render('index.html', {
-    'og_url': url,
-    'og_image': url + '/thumbnail',
+    'og_url': requestUrl,
+    'og_image': requestUrl + '/thumbnail',
     'twitter': twitter,
     'twitter_site': twitterId
   });
