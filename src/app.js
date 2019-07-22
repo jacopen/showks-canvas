@@ -39,8 +39,8 @@ const imageMetaData = {
 const hasBucket = imageBucketEndpoint === undefined || imageBucketEndpoint === '' ? false : true;
 const minioClient = hasBucket ? new minio.Client({
   endPoint: imageBucketEndpoint,
-  port: 80,
-  useSSL: false,
+  port: 443,
+  useSSL: true,
   accessKey: imageBucketAccessKey,
   secretKey: imageBucketSecretKey
 }) : undefined;
