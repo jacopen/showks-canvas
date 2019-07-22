@@ -19,7 +19,6 @@ const port = process.env.PORT || 8080;
 const draw = require('./public/scripts/draw.js');
 const minio = require('minio');
 const fs = require('fs');
-const URL = require('url');
 const mustacheExpress = require('mustache-express');
 
 // Create a canvas for server-side drawing
@@ -154,12 +153,6 @@ function onSaveImageTimer() {
 }
 
 function getRequestUrl(req) {
-  let originalUri = req.get('X-Original-Uri');
-  if (originalUri !== undefined && originalUri !== '') {
-    console.log('X-Original-Uri: ' + originalUri);
-    const oUrl = URL.parse(originalUri);
-    return oUrl.protocol + '://' + oUrl.host;
-  }
   return req.protocol + '://' + req.get('host');
 }
 
