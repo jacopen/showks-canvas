@@ -3,6 +3,9 @@
   "version": "1.4.2",
   "description": "A simple collaborative whiteboard using socket.io",
   "main": "app.js",
+  "engines": {
+    "node": "10.x.x"
+  },
   "keywords": [
     "Cloud Native Days",
     "showKs"
