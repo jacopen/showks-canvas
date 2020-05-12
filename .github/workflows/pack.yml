@@ -1,0 +1,33 @@
+name: Image Build with Pack
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup pack cli
+      run: |
+        wget https://github.com/buildpacks/pack/releases/download/v0.10.0/pack-v0.10.0-linux.tgz 
+        tar xvfz ./pack-*
+        sudo install pack /usr/local/bin
+
+    - name: Pack build
+      run: |
+        cd src 
+        pack build jacopen/showks-canvas:${{ github.sha }} --builder gcr.io/paketo-buildpacks/builder:base
+        
+    - name: Docker push
+      run: |
+        docker login -u ${{ secrets.REPOSITORY_USERNAME }} -p ${{ secrets.REPOSITORY_PASSWORD }}
+        docker push jacopen/showks-canvas:${{ github.sha }}
+        
